@@ -1,1 +1,40 @@
-# Your Solution
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_USER: task3_user
+      POSTGRES_PASSWORD: CzqITBeKF5vwb2GHO9r0VpcVtm8bo2Fa
+      POSTGRES_DB: task3
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always  # Ensure the container restarts on failure
+
+  book_catalog:
+    build: ./book_catalog
+    container_name: book_catalog
+    environment:
+      DATABASE_URL: "postgresql://task3_user:CzqITBeKF5vwb2GHO9r0VpcVtm8bo2Fa@dpg-crkordrv2p9s73e592u0-a/task3?sslmode=require"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    restart: always  # Ensure the container restarts on failure
+
+  inventory_management:
+    build: ./inventory_management
+    container_name: inventory_management
+    environment:
+      DATABASE_URL: "postgresql://task3_user:CzqITBeKF5vwb2GHO9r0VpcVtm8bo2Fa@dpg-crkordrv2p9s73e592u0-a/task3?sslmode=require"
+    ports:
+      - "8001:8001"
+    depends_on:
+      - postgres
+    restart: always  # Ensure the container restarts on failure
+
+volumes:
+  postgres_data:
